@@ -73,7 +73,6 @@ void * prod_timed_thread(void * arg)
         else
         {
             circular_buf_put(cbuf, 'T');
-            pthread_mutex
 
             // Get a random exponentially distributed delay
             U = (float)rand()/(float)RAND_MAX;
