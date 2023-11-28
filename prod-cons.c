@@ -38,14 +38,26 @@ void * prod_button_thread(void * arg)
 {
     while (running) 
     {
-        if ( shitty_btn_semaphore > 0 )
-        { 
-            circular_buf_put(cbuf, 'B');
-            shitty_btn_semaphore -= 1;
-        }
-        else
+
+        if (circular_buf_full(cbuf))
         {
-            msleep(0);
+            pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
+        } else {
+
+            if (!circular_buf_empty(cbuf))
+            {
+                pthread_cond_signal(&cbuf_no_longer_empty);
+            }
+
+            if ( shitty_btn_semaphore > 0 )
+            {
+                circular_buf_put(cbuf, 'B');
+                shitty_btn_semaphore -= 1;
+            }
+            else
+            {
+                msleep(0);
+            }
         }
     }
     return arg;
@@ -66,9 +78,7 @@ void * prod_timed_thread(void * arg)
     {
         if (circular_buf_full(cbuf))
         {
-            // buffer full --> no production
-            // instead we sleep and try again
-            msleep(0);
+            pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
         }
         else
         {
@@ -100,11 +110,15 @@ void * cons_timed_thread(void * arg)
     {
         if (circular_buf_empty(cbuf))
         {
-            msleep(0); // sleep and try again
+            pthread_cond_wait(&cbuf_no_longer_empty, &cbuf_mut);
         }
         else
         {
-            pthread_mutex_lock(&cbuf_mut);
+
+            if (!circular_buf_full(cbuf))
+            {
+                pthread_cond_signal(&cbuf_no_longer_full);
+            }
 
             circular_buf_get(cbuf, &read_val);
 
@@ -115,7 +129,7 @@ void * cons_timed_thread(void * arg)
             // T = T_avg;
             msleep(round(T));
 
-            pthread_mutex_unlock(&cbuf_mut);
+            //pthread_mutex_unlock(&cbuf_mut);
         }
     }
     return arg;
