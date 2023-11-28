@@ -104,12 +104,7 @@ void * cons_timed_thread(void * arg)
         }
         else
         {
-            if (circular_buf_full(cbuf))
-            {
-                pthread_mutex_trylock(&cbuf_mut);
-            } else {
-                pthread_mutex_unlock(&cbuf_mut);
-            }
+            pthread_mutex_lock(&cbuf_mut);
 
             circular_buf_get(cbuf, &read_val);
 
@@ -119,6 +114,8 @@ void * cons_timed_thread(void * arg)
             // Use this to switch to constant delay:
             // T = T_avg;
             msleep(round(T));
+
+            pthread_mutex_unlock(&cbuf_mut);
         }
     }
     return arg;
