@@ -73,6 +73,7 @@ void * prod_timed_thread(void * arg)
         else
         {
             circular_buf_put(cbuf, 'T');
+            pthread_mutex
 
             // Get a random exponentially distributed delay
             U = (float)rand()/(float)RAND_MAX;
@@ -98,16 +99,19 @@ void * cons_timed_thread(void * arg)
 
     while (running)
     {
-        if (circular_buf_full(cbuf))
-        {
-            pthread_mutex_lock(&cbuf_mut);
-        }
         if (circular_buf_empty(cbuf))
         {
             msleep(0); // sleep and try again
         }
         else
         {
+            if (circular_buf_full(cbuf))
+            {
+                pthread_mutex_lock(&cbuf_mut);
+            } else {
+                pthread_mutex_unlock(&cbuf_mut);
+            }
+
             circular_buf_get(cbuf, &read_val);
 
             // Get a random exponentially distributed delay
