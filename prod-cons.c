@@ -41,7 +41,6 @@ void * prod_button_thread(void * arg)
 
         if (circular_buf_full(cbuf))
         {
-            msleep(0);
             pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
         } else {
 
@@ -52,7 +51,9 @@ void * prod_button_thread(void * arg)
 
             if ( shitty_btn_semaphore > 0 )
             {
+                pthread_mutex_lock(&cbuf_mut);
                 circular_buf_put(cbuf, 'B');
+                pthread_mutex_unlock(&cbuf_mut);
                 shitty_btn_semaphore -= 1;
             }
             else
@@ -83,7 +84,9 @@ void * prod_timed_thread(void * arg)
         }
         else
         {
+            pthread_mutex_lock(&cbuf_mut);
             circular_buf_put(cbuf, 'T');
+            pthread_mutex_unlock(&cbuf_mut);
 
             // Get a random exponentially distributed delay
             U = (float)rand()/(float)RAND_MAX;
@@ -121,7 +124,9 @@ void * cons_timed_thread(void * arg)
                 pthread_cond_signal(&cbuf_no_longer_full);
             }
 
+            pthread_mutex_lock(&cbuf_mut);
             circular_buf_get(cbuf, &read_val);
+            pthread_mutex_unlock(&cbuf_mut);
 
             // Get a random exponentially distributed delay
             U = (float)rand()/(float)RAND_MAX;
