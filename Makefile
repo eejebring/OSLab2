@@ -13,7 +13,7 @@ dining:
 		-o dining.bin
 
 prod-cons:
-		gcc prod-con.c circular_buffer.c \
+		gcc prod-cons.c circular_buffer.c \
 		$(LIBPT) \
 		$(LIBWP) \
 		$(LIBMATH) \
