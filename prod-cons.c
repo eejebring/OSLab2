@@ -98,6 +98,10 @@ void * cons_timed_thread(void * arg)
 
     while (running)
     {
+        if (circular_buf_full(cbuf))
+        {
+            pthread_mutex_lock(&cbuf_mut);
+        }
         if (circular_buf_empty(cbuf))
         {
             msleep(0); // sleep and try again
