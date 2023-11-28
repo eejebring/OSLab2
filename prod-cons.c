@@ -106,7 +106,7 @@ void * cons_timed_thread(void * arg)
         {
             if (circular_buf_full(cbuf))
             {
-                pthread_mutex_lock(&cbuf_mut);
+                pthread_mutex_trylock(&cbuf_mut);
             } else {
                 pthread_mutex_unlock(&cbuf_mut);
             }
