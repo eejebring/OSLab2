@@ -11,7 +11,7 @@
 #include "millisleep.h"
 #include "circular_buffer.h" // this is NOT a thread safe library
 
-#define     BTN_PIN     7
+#define     BTN_PIN     29
 
 int running           = 1;
 
