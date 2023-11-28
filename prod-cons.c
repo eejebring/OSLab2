@@ -41,6 +41,7 @@ void * prod_button_thread(void * arg)
 
         if (circular_buf_full(cbuf))
         {
+            msleep(0)
             pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
         } else {
 
