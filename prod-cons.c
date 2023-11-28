@@ -42,6 +42,7 @@ void * prod_button_thread(void * arg)
         if (circular_buf_full(cbuf))
         {
             pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
+            pthread_mutex_unlock(&cbuf_mut);
         } else {
 
             if (!circular_buf_empty(cbuf))
@@ -81,6 +82,7 @@ void * prod_timed_thread(void * arg)
         if (circular_buf_full(cbuf))
         {
             pthread_cond_wait(&cbuf_no_longer_full, &cbuf_mut);
+            pthread_mutex_unlock(&cbuf_mut);
         }
         else
         {
@@ -115,6 +117,7 @@ void * cons_timed_thread(void * arg)
         if (circular_buf_empty(cbuf))
         {
             pthread_cond_wait(&cbuf_no_longer_empty, &cbuf_mut);
+            pthread_mutex_unlock(&cbuf_mut);
         }
         else
         {
