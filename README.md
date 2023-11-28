@@ -14,3 +14,10 @@
 * Mutual exclusion: the forks are shared resources, so they can be used by multiple philosophers at the same time.
 * No preemption: another philosopher can take the fork from a philosopher who is waiting for the second fork.
 * Circular wait: the philosophers will not try to acquire the forks in the same order, so there will be no circular wait.
+
+## Exercise 2
+1. The printing thread doesn’t use synchronization – and that’s fine. Why would this be okay? (hint in margin)
+* The printing thread doesn't use synchronization because it doesn't write to the same memory as the other threads. It only reads from the memory.
+
+2. What’s kind of behavior does the usage of pthread_cond_t prevent?
+* The usage of pthread_cond_t prevents busy waiting.
