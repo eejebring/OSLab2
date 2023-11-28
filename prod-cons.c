@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
     pthread_create(&pthread_cbuf_print,  NULL, cbuf_print_fun,     NULL);
 
     /***** Run for 20 seconds *****/
-    msleep(20000);
+    msleep(200000);
 
     /***** Stop threads, then join() or kill() them *****/
     running = 0;
